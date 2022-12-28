@@ -1,18 +1,18 @@
-#include "simplevector.h"
+#include "vector.h"
 
 #include <assert.h>
 #include <string.h>
 
-SimpleVector *SimpleVectorInitalize(const size_t elementSize)
+Vector *VectorInitalize(const size_t elementSize)
 {
-    SimpleVector *vector = (SimpleVector *)calloc(1, sizeof(SimpleVector));
+    Vector *vector = (Vector *)calloc(1, sizeof(Vector));
     assert(vector);    
     vector->__elementSize = elementSize;
     vector->__data = calloc(0, elementSize);
     return vector;
 }
 
-void SimpleVectorDeinitalize(const SimpleVector *vector)
+void VectorDeinitalize(Vector *vector)
 {    
     for(size_t i = 0; i < vector->__size; i++)
        free((void*)vector->__data[i]);
@@ -20,7 +20,7 @@ void SimpleVectorDeinitalize(const SimpleVector *vector)
     free((void *)vector);
 }
 
-void SimpleVectorPushFront(SimpleVector *vector, void *element)
+void VectorPushFront(Vector *vector, void *element)
 {
     vector->__data = (void**)realloc(vector->__data, ++vector->__size * sizeof(void*));
     memcpy(vector->__data + 1, vector->__data, (vector->__size - 1) * sizeof(void*));
@@ -28,14 +28,14 @@ void SimpleVectorPushFront(SimpleVector *vector, void *element)
     memcpy(vector->__data[0], element, vector->__elementSize);
 }
 
-void SimpleVectorPushBack(SimpleVector *vector, void *element)
+void VectorPushBack(Vector *vector, void *element)
 {
     vector->__data = (void**)realloc(vector->__data, ++vector->__size * sizeof(void*));
     vector->__data[vector->__size - 1] = (void *)malloc(vector->__elementSize);
     memcpy(vector->__data[vector->__size - 1], element, vector->__elementSize);
 }
 
-void SimpleVectorInsert(SimpleVector *vector, void *element, const size_t index)
+void VectorInsert(Vector *vector, void *element, const size_t index)
 {
     vector->__data = (void**)realloc(vector->__data, ++vector->__size * sizeof(void*));
     memcpy(vector->__data + index, vector->__data + index - 1, (vector->__size - index) * sizeof(void*));
@@ -43,9 +43,9 @@ void SimpleVectorInsert(SimpleVector *vector, void *element, const size_t index)
     memcpy(vector->__data[index], element, vector->__elementSize);
 }
 
-void SimpleVectorPopFront(SimpleVector *vector)
+void VectorPopFront(Vector *vector)
 {
-    assert(vector->__size > 0);
+    if(vector->__size == 0)return;
 
     void **ptr = (void**)malloc((vector->__size - 1) * sizeof(void*));
     memcpy(ptr, vector->__data + 1, --vector->__size * sizeof(void*));
@@ -54,20 +54,20 @@ void SimpleVectorPopFront(SimpleVector *vector)
     vector->__data = ptr;        
 }
 
-void SimpleVectorPopBack(SimpleVector *vector)
+void VectorPopBack(Vector *vector)
 {
-    assert(vector->__size > 0);
+    if(vector->__size == 0)return;
 
     free(vector->__data[vector->__size - 1]);    
     vector->__data = (void**)realloc(vector->__data, --vector->__size * sizeof(void*));        
 }
 
-const void *SimpleVectorAt(const SimpleVector *vector, const size_t index)
+const void *VectorAt(const Vector *vector, const size_t index)
 {
     return index >= vector->__size && index < 0 ? NULL : vector->__data[index];
 }
 
-size_t SimpleVectorGetSize(const SimpleVector const *vector)
+size_t VectorGetSize(const Vector const *vector)
 {
     return vector->__size;
 }
