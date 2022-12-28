@@ -28,8 +28,7 @@ void QueuePush(Queue *queue, void *element)
     memcpy(ptr, element, queue->__elementSize);
     node->__element = ptr;
 
-    queue->__size++;
-    if(queue->__first == NULL)
+    if(queue->__size == 0)
     {        
         queue->__first = node;
         queue->__last = queue->__first;        
@@ -39,6 +38,7 @@ void QueuePush(Queue *queue, void *element)
         queue->__last->__nextElement = node;
         queue->__last = node;
     }
+    queue->__size++;
 }
 
 void QueuePop(Queue *queue)
@@ -50,7 +50,6 @@ void QueuePop(Queue *queue)
         queue->__first = queue->__first->__nextElement;        
         free(node->__element);  
         free(node);        
-        if(queue->__size == 0) queue->__first = NULL;
     }
 }
 
